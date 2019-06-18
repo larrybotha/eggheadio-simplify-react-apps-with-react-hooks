@@ -14,7 +14,7 @@ Folder structure from [this gist](https://gist.github.com/ryanflorence/daafb1e3c
 
 ## 02. Refactor a Class Component with React hooks to a Function
 
-[query.js](./src/screens/user/components/query.old.js)
+[query.js](./src/screens/user/components/query.js)
 
 [query.old.js](./src/screens/user/components/query.old.js)
 
