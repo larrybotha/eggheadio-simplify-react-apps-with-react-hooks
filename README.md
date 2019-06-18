@@ -53,7 +53,8 @@ To do this:
 
 - remove the dependencies array from `useEffect`
 - compare the previous inputs with the new inputs from within `useEffect`
-- create a ref in which to store the previous inputs
+- create a ref in which to store the previous inputs without forcing a render
+    when values are updated in the ref
 - create another `useEffect` which will be responsible for storing the previous
     inputs once the query `useEffect` has run
 
@@ -65,4 +66,4 @@ To do this:
     synchronously
 - values in a ref are stored on the `current` property
 - `useRef` allows one to create a ref, and refs can store anything outside of a
-    component's state or props
+    component's state or props and be updated without forcing a re-render
