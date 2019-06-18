@@ -9,7 +9,7 @@ import * as GitHub from '../../../github-client'
  */
 class Query extends Component {
   /*
-   * These will become funciton parameters
+   * These will become function parameters
    */
   static propTypes = {
     query: PropTypes.string.isRequired,
