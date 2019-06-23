@@ -10,6 +10,7 @@ Folder structure from [this gist](https://gist.github.com/ryanflorence/daafb1e3c
 
 - [02. Refactor a Class Component with React hooks to a Function](#02-refactor-a-class-component-with-react-hooks-to-a-function)
 - [03. Handle Deep Object Comparison in React's `useEffect` hook with the `useRef` Hook](#03-handle-deep-object-comparison-in-reacts-useeffect-hook-with-the-useref-hook)
+- [04. Safely setState on a Mounted React Component through the useEffect Hook](#04-safely-setstate-on-a-mounted-react-component-through-the-useeffect-hook)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -67,3 +68,9 @@ To do this:
 - values in a ref are stored on the `current` property
 - `useRef` allows one to create a ref, and refs can store anything outside of a
     component's state or props and be updated without forcing a re-render
+
+## 04. Safely setState on a Mounted React Component through the useEffect Hook
+
+[query.js](./src/screens/user/components/query.js)
+
+[query.03.js](./src/screens/user/components/query.03.js)
