@@ -55,7 +55,7 @@ function Query({query, variables, children, normalize = data => data}) {
     /*
 {      * state is now set using our setState returned from our reducer
        */
-    setState({fetching: true})
+    setStateSafely({fetching: true})
 
     /*
        * we now have Github client accessible via our useContext hook
@@ -66,7 +66,7 @@ function Query({query, variables, children, normalize = data => data}) {
     client
       .request(query, variables)
       .then(res =>
-        setState({
+        setStateSafely({
           data: normalize(res),
           error: null,
           loaded: true,
@@ -74,7 +74,7 @@ function Query({query, variables, children, normalize = data => data}) {
         }),
       )
       .catch(error =>
-        setState({
+        setStateSafely({
           error,
           data: null,
           loaded: false,
@@ -112,6 +112,14 @@ function Query({query, variables, children, normalize = data => data}) {
      */
     previousInputsRef.current = [query, variables]
   })
+
+  const isMountedRef = useRef()
+  useEffect(() => {
+    isMountedRef.current = true
+
+    return () => (isMountedRef.current = false)
+  }, [])
+  const setStateSafely = (...args) => isMountedRef.current && setState(...args)
 
   /*
    * return children with the state managed via useReducer
