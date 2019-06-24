@@ -10,7 +10,7 @@ Folder structure from [this gist](https://gist.github.com/ryanflorence/daafb1e3c
 
 - [02. Refactor a Class Component with React hooks to a Function](#02-refactor-a-class-component-with-react-hooks-to-a-function)
 - [03. Handle Deep Object Comparison in React's `useEffect` hook with the `useRef` Hook](#03-handle-deep-object-comparison-in-reacts-useeffect-hook-with-the-useref-hook)
-- [04. Safely setState on a Mounted React Component through the useEffect Hook](#04-safely-setstate-on-a-mounted-react-component-through-the-useeffect-hook)
+- [04. Safely `setState` on a Mounted React Component through the `useEffect` Hook](#04-safely-setstate-on-a-mounted-react-component-through-the-useeffect-hook)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -69,8 +69,36 @@ To do this:
 - `useRef` allows one to create a ref, and refs can store anything outside of a
     component's state or props and be updated without forcing a re-render
 
-## 04. Safely setState on a Mounted React Component through the useEffect Hook
+## 04. Safely `setState` on a Mounted React Component through the `useEffect` Hook
 
 [query.js](./src/screens/user/components/query.js)
 
 [query.03.js](./src/screens/user/components/query.03.js)
+
+Because `useEffect` is executing an asynchronous request and `setState`, the
+`dispatch` function returned from `useReducer`, is called when the promise is
+resolved or rejected, we need to ensure that if the component is unmounted that
+`setState` is not called, as `useState` and `useReducer`s returned updater
+functions can't be called on unmounted components without throwing errors.
+
+To fix this, we can use:
+
+- a ref to store the mounted state of the component
+- use `useEffect` to set the ref to indicate that the component is mounted
+- only call `setState` if the ref indicates the component is mounted
+- return a callback from within `useEffect` that will set the ref to indicate
+    the component is no longer mounted
+- provide an empty deps array to `useEffect` to ensure that it is only called
+    once on mount, and once on unmount
+
+*Takeaways:*
+
+- asynchronous operations within `useEffect` should have guards to ensure that
+    calls to the component's functions are not executed if the component is no
+    longer mounted
+- a ref is a good place to store this state, as we don't want rerenders to be
+    triggered when it is updated
+- `useEffect`s return callback is a sort of teardown function which can be used
+    to undo what `useEffect` does
+- an empty array as deps for `useEffect` will result in the effect only being
+    executed on mount, and on unmount
