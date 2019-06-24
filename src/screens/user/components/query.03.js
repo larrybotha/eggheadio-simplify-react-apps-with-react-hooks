@@ -55,7 +55,7 @@ function Query({query, variables, children, normalize = data => data}) {
     /*
 {      * state is now set using our setState returned from our reducer
        */
-    setStateSafely({fetching: true})
+    setState({fetching: true})
 
     /*
        * we now have Github client accessible via our useContext hook
@@ -66,7 +66,7 @@ function Query({query, variables, children, normalize = data => data}) {
     client
       .request(query, variables)
       .then(res =>
-        setStateSafely({
+        setState({
           data: normalize(res),
           error: null,
           loaded: true,
@@ -74,7 +74,7 @@ function Query({query, variables, children, normalize = data => data}) {
         }),
       )
       .catch(error =>
-        setStateSafely({
+        setState({
           error,
           data: null,
           loaded: false,
@@ -112,47 +112,6 @@ function Query({query, variables, children, normalize = data => data}) {
      */
     previousInputsRef.current = [query, variables]
   })
-
-  /*
-   * Store the mounted state on a ref so that when the value changes it does not
-   * trigger a render
-   */
-  const isMountedRef = useRef()
-
-  /*
-   * Handle component state when the component mounts and unmounts
-   */
-  useEffect(
-    () => {
-      /*
-     * When the component mounts, use the ref to indicate this is so
-     */
-      isMountedRef.current = true
-
-      /*
-     * When the component unmounts, update the ref to indicate so
-     */
-      return () => (isMountedRef.current = false)
-    },
-    /*
-     * Provide an empty deps array to useEffect so that it is only called once
-     * for mounting, and once when the component is unmounted
-     */
-    [],
-  )
-
-  /*
-   * Create a safe setState that will handle safely updating state only while
-   * the component is mounted
-   *
-   * Calling out useReducer's setState on an unmounted component will throw an
-   * error
-   *
-   * With this function being called from within the query useEffect we can be
-   * confident that we won't have async callbcaks casuing issues at any point of
-   * the component's lifecycle
-   */
-  const setStateSafely = (...args) => isMountedRef.current && setState(...args)
 
   /*
    * return children with the state managed via useReducer
