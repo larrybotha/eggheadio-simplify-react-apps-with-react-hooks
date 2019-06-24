@@ -113,12 +113,45 @@ function Query({query, variables, children, normalize = data => data}) {
     previousInputsRef.current = [query, variables]
   })
 
+  /*
+   * Store the mounted state on a ref so that when the value changes it does not
+   * trigger a render
+   */
   const isMountedRef = useRef()
-  useEffect(() => {
-    isMountedRef.current = true
 
-    return () => (isMountedRef.current = false)
-  }, [])
+  /*
+   * Handle component state when the component mounts and unmounts
+   */
+  useEffect(
+    () => {
+      /*
+     * When the component mounts, use the ref to indicate this is so
+     */
+      isMountedRef.current = true
+
+      /*
+     * When the component unmounts, update the ref to indicate so
+     */
+      return () => (isMountedRef.current = false)
+    },
+    /*
+     * Provide an empty deps array to useEffect so that it is only called once
+     * for mounting, and once when the component is unmounted
+     */
+    [],
+  )
+
+  /*
+   * Create a safe setState that will handle safely updating state only while
+   * the component is mounted
+   *
+   * Calling out useReducer's setState on an unmounted component will throw an
+   * error
+   *
+   * With this function being called from within the query useEffect we can be
+   * confident that we won't have async callbcaks casuing issues at any point of
+   * the component's lifecycle
+   */
   const setStateSafely = (...args) => isMountedRef.current && setState(...args)
 
   /*
