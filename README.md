@@ -12,6 +12,7 @@ Folder structure from [this gist](https://gist.github.com/ryanflorence/daafb1e3c
 - [03. Handle Deep Object Comparison in React's `useEffect` hook with the `useRef` Hook](#03-handle-deep-object-comparison-in-reacts-useeffect-hook-with-the-useref-hook)
 - [04. Safely `setState` on a Mounted React Component through the `useEffect` Hook](#04-safely-setstate-on-a-mounted-react-component-through-the-useeffect-hook)
 - [05. Extract Generic React Hook Code into Custom React Hooks](#05-extract-generic-react-hook-code-into-custom-react-hooks)
+- [06. Track Values Over the Course of Renders with React `useRef` in a Custom `usePrevious` Hook](#06-track-values-over-the-course-of-renders-with-react-useref-in-a-custom-useprevious-hook)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -120,3 +121,19 @@ that are within a single component only.
 - `useRef` can be used inside the custom hook in the same way as within the
     component, allowing one to abstract the logic for whether a component is
     mounted or not
+
+## 06. Track Values Over the Course of Renders with React `useRef` in a Custom `usePrevious` Hook
+
+[query.js](./src/screens/user/components/query.js)
+
+[query.05.js](./src/screens/user/components/query.05.js)
+
+One can extract `useRef` to a custom hook. In this scenario we've extracted a
+hook that could be useful for other components that need to evaluate props from
+previous renders.
+
+*Takeaways:*
+
+- the order of hooks is important - the `usePrevious` hook in this example would
+    be of no value if it were called before any code that needed to evaluate the
+    previous render's props

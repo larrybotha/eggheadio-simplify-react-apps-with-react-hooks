@@ -46,29 +46,6 @@ function useSafeSetState(initialState) {
   return [state, setStateSafely]
 }
 
-/*
- * Create a generic ref for holding previous values
- *
- * Because we want the the component to evaluate the previous render, this
- * hook _must_ be placed after any values that are evaluating the previous value
- * within the component.
- *
- * If this hook were to be used at the top of the component, we would be updating
- * the ref at the beginning of each render, losing the previous render's value,
- * making this hook redundant
- *
- * The order of placement of hooks, as with any synchronous code, is important
- */
-const usePrevious = value => {
-  const ref = useRef()
-
-  useEffect(() => {
-    ref.current = value
-  })
-
-  return ref.current
-}
-
 function Query({query, variables, children, normalize = data => data}) {
   const client = useContext(GitHub.Context)
 
@@ -82,9 +59,8 @@ function Query({query, variables, children, normalize = data => data}) {
     fetching: false,
     loaded: false,
   })
-
   useEffect(() => {
-    if (isEqual(previousInputs, [query, variables])) {
+    if (isEqual(previousInputsRef.current, [query, variables])) {
       return
     }
 
@@ -109,16 +85,11 @@ function Query({query, variables, children, normalize = data => data}) {
       )
   })
 
-  /*
-   * Place usePrevious _after_ our effect, so that we store the values after
-   * useEffect has run, otherwise we'll be storing the same values that useEffect
-   * evaluates against
-   *
-   * Remember - all of this is synchronous, so we need to ensure that we only
-   * set a value on the ref before the component re-renders, so that on the current
-   * render previousInputs holds the values from the previous render
-   */
-  const previousInputs = usePrevious([query, variables])
+  const previousInputsRef = useRef()
+
+  useEffect(() => {
+    previousInputsRef.current = [query, variables]
+  })
 
   return children(state)
 }
