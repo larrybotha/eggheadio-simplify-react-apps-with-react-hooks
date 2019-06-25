@@ -11,6 +11,7 @@ Folder structure from [this gist](https://gist.github.com/ryanflorence/daafb1e3c
 - [02. Refactor a Class Component with React hooks to a Function](#02-refactor-a-class-component-with-react-hooks-to-a-function)
 - [03. Handle Deep Object Comparison in React's `useEffect` hook with the `useRef` Hook](#03-handle-deep-object-comparison-in-reacts-useeffect-hook-with-the-useref-hook)
 - [04. Safely `setState` on a Mounted React Component through the `useEffect` Hook](#04-safely-setstate-on-a-mounted-react-component-through-the-useeffect-hook)
+- [05. Extract Generic React Hook Code into Custom React Hooks](#05-extract-generic-react-hook-code-into-custom-react-hooks)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -102,3 +103,20 @@ To fix this, we can use:
     to undo what `useEffect` does
 - an empty array as deps for `useEffect` will result in the effect only being
     executed on mount, and on unmount
+
+## 05. Extract Generic React Hook Code into Custom React Hooks
+
+[query.js](./src/screens/user/components/query.js)
+
+[query.04.js](./src/screens/user/components/query.04.js)
+
+One can create a custom hook outside of a component that can then be used inside
+the component. This is useful for hooks that are common, and less so for hooks
+that are within a single component only.
+
+*Takeaways:*
+
+- a custom hook can make use of another custom hook and extend it
+- `useRef` can be used inside the custom hook in the same way as within the
+    component, allowing one to abstract the logic for whether a component is
+    mounted or not
