@@ -112,6 +112,10 @@ function normalizeUserData(data) {
 const User = ({username}) => {
   /**
    * use useState to store and update the simple filter value
+   *
+   * There's no need for a separate handler for when filter needs to eb set, so
+   * we can remove the handler and just use the state update function returned
+   * from useState
    */
   const [filter, setFilter] = useState('')
   /*
@@ -119,13 +123,6 @@ const User = ({username}) => {
    * useContext
    */
   const {logout} = useContext(GitHubContext)
-
-  /**
-   * add handleFilterUpdate inside the component, and use setFilter
-   */
-  const handleFilterUpdate = f => {
-    setFilter(f)
-  }
 
   /**
    * remove all occurrences of `this`
@@ -162,7 +159,7 @@ const User = ({username}) => {
                 </Column>
                 <Column width="9">
                   <Text size="subheading">Repositories</Text>
-                  <RepoFilter filter={filter} onUpdate={handleFilterUpdate} />
+                  <RepoFilter filter={filter} onUpdate={setFilter} />
                   <RepoList filter={filter} />
                 </Column>
               </Row>
