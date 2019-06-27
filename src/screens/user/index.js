@@ -113,7 +113,7 @@ const User = ({username}) => {
   /**
    * use useState to store and update the simple filter value
    */
-  const [filter, setState] = useState('')
+  const [filter, setFilter] = useState('')
   /*
    * destructure the context returned by passing the GitHubContext into
    * useContext
@@ -121,10 +121,10 @@ const User = ({username}) => {
   const {logout} = useContext(GitHubContext)
 
   /**
-   * add handleFilterUpdate inside the component, and use setState
+   * add handleFilterUpdate inside the component, and use setFilter
    */
   const handleFilterUpdate = f => {
-    setState({filter: f})
+    setFilter(f)
   }
 
   /**
