@@ -13,6 +13,7 @@ Folder structure from [this gist](https://gist.github.com/ryanflorence/daafb1e3c
 - [04. Safely `setState` on a Mounted React Component through the `useEffect` Hook](#04-safely-setstate-on-a-mounted-react-component-through-the-useeffect-hook)
 - [05. Extract Generic React Hook Code into Custom React Hooks](#05-extract-generic-react-hook-code-into-custom-react-hooks)
 - [06. Track Values Over the Course of Renders with React `useRef` in a Custom `usePrevious` Hook](#06-track-values-over-the-course-of-renders-with-react-useref-in-a-custom-useprevious-hook)
+- [07. Refactor a React Class Component with useContext and useState Hooks](#07-refactor-a-react-class-component-with-usecontext-and-usestate-hooks)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -137,3 +138,14 @@ previous renders.
 - the order of hooks is important - the `usePrevious` hook in this example would
     be of no value if it were called before any code that needed to evaluate the
     previous render's props
+
+## 07. Refactor a React Class Component with useContext and useState Hooks
+
+[user/index.js](./src/screens/user/components/user/index.js)
+
+[user/index.orig.js](./src/screens/user/components/query.orig.js)
+
+A simple refactor of a class component to a component function:
+
+- replace `static contextType` and `this.context` with `userContext`
+- replace component state with `useState`
