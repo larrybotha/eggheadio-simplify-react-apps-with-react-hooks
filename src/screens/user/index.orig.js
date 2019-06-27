@@ -1,7 +1,7 @@
 /* @jsx jsx */
 import {jsx} from '@emotion/core'
 
-import {useContext, useState} from 'react'
+import {Component} from 'react'
 import PropTypes from 'prop-types'
 import {Container, Row, Column} from '../../shared/layout'
 import {
@@ -109,74 +109,68 @@ function normalizeUserData(data) {
   }
 }
 
-const User = ({username}) => {
-  /**
-   * use useState to store and update the simple filter value
-   */
-  const [filter, setState] = useState('')
-  /*
-   * destructure the context returned by passing the GitHubContext into
-   * useContext
-   */
-  const {logout} = useContext(GitHubContext)
+class User extends Component {
+  static propTypes = {
+    username: PropTypes.string,
+  }
+  static contextType = GitHubContext
+  state = {filter: ''}
 
-  /**
-   * add handleFilterUpdate inside the component, and use setState
-   */
-  const handleFilterUpdate = f => {
-    setState({filter: f})
+  handleFilterUpdate = filter => {
+    this.setState({filter})
   }
 
-  /**
-   * remove all occurrences of `this`
-   */
-  return (
-    <Query
-      query={userQuery}
-      variables={{username}}
-      normalize={normalizeUserData}
-    >
-      {({fetching, data, error}) =>
-        error ? (
-          <IsolatedContainer>
-            <p>There was an error loading the data</p>
-            <pre>{JSON.stringify(error, null, 2)}</pre>
-          </IsolatedContainer>
-        ) : fetching ? (
-          <LoadingMessagePage>Loading data for {username}</LoadingMessagePage>
-        ) : data ? (
-          <UserContext.Provider value={data}>
-            <Container>
-              <Row>
-                <Column width="3">
-                  <Profile />
-                  <PrimaryButton
-                    css={{marginTop: 20, width: '100%'}}
-                    onClick={logout}
-                  >
-                    Logout
-                  </PrimaryButton>
-                  <ButtonLink css={{marginTop: 20, width: '100%'}} to="/">
-                    Try another
-                  </ButtonLink>
-                </Column>
-                <Column width="9">
-                  <Text size="subheading">Repositories</Text>
-                  <RepoFilter filter={filter} onUpdate={handleFilterUpdate} />
-                  <RepoList filter={filter} />
-                </Column>
-              </Row>
-            </Container>
-          </UserContext.Provider>
-        ) : (
-          <IsolatedContainer>I have no idea what's up...</IsolatedContainer>
-        )
-      }
-    </Query>
-  )
-}
-User.propTypes = {
-  username: PropTypes.string,
+  render() {
+    const {username} = this.props
+    const {filter} = this.state
+    return (
+      <Query
+        query={userQuery}
+        variables={{username}}
+        normalize={normalizeUserData}
+      >
+        {({fetching, data, error}) =>
+          error ? (
+            <IsolatedContainer>
+              <p>There was an error loading the data</p>
+              <pre>{JSON.stringify(error, null, 2)}</pre>
+            </IsolatedContainer>
+          ) : fetching ? (
+            <LoadingMessagePage>Loading data for {username}</LoadingMessagePage>
+          ) : data ? (
+            <UserContext.Provider value={data}>
+              <Container>
+                <Row>
+                  <Column width="3">
+                    <Profile />
+                    <PrimaryButton
+                      css={{marginTop: 20, width: '100%'}}
+                      onClick={this.context.logout}
+                    >
+                      Logout
+                    </PrimaryButton>
+                    <ButtonLink css={{marginTop: 20, width: '100%'}} to="/">
+                      Try another
+                    </ButtonLink>
+                  </Column>
+                  <Column width="9">
+                    <Text size="subheading">Repositories</Text>
+                    <RepoFilter
+                      filter={filter}
+                      onUpdate={this.handleFilterUpdate}
+                    />
+                    <RepoList filter={filter} />
+                  </Column>
+                </Row>
+              </Container>
+            </UserContext.Provider>
+          ) : (
+            <IsolatedContainer>I have no idea what's up...</IsolatedContainer>
+          )
+        }
+      </Query>
+    )
+  }
 }
 
 export default User
