@@ -14,6 +14,7 @@ Folder structure from [this gist](https://gist.github.com/ryanflorence/daafb1e3c
 - [05. Extract Generic React Hook Code into Custom React Hooks](#05-extract-generic-react-hook-code-into-custom-react-hooks)
 - [06. Track Values Over the Course of Renders with React `useRef` in a Custom `usePrevious` Hook](#06-track-values-over-the-course-of-renders-with-react-useref-in-a-custom-useprevious-hook)
 - [07. Refactor a React Class Component with useContext and useState Hooks](#07-refactor-a-react-class-component-with-usecontext-and-usestate-hooks)
+- [08. Refactor a render Prop Component to a Custom React Hook](#08-refactor-a-render-prop-component-to-a-custom-react-hook)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -149,3 +150,40 @@ A simple refactor of a class component to a component function:
 
 - replace `static contextType` and `this.context` with `userContext`
 - replace component state with `useState`
+
+## 08. Refactor a render Prop Component to a Custom React Hook
+
+[user/index.js](./src/screens/user/components/index.js)
+
+[user/index.07.js](./src/screens/user/components/index.07.js)
+
+[query.js](./src/screens/user/components/query.js)
+
+[query.06.js](./src/screens/user/components/query.06.js)
+
+A render prop is useful, but creates a lot of nesting. By moving the props a
+render prop provides to a custom hook, one can remove the nesting, and import
+the custom hook instead.
+
+Furthermore, a render prop can be created from the custom hook by simply
+creating a component function that accepts props from a parent, and returns the
+custom hook with those props appled:
+
+```javascript
+const useCustomHook = () => {}
+
+const MyRenderProp = props => useCustomHook(props);
+```
+
+*Takeaways:*
+
+- render props can be refactored to custom hooks (given the render prop doesn't
+    have any of its own markup to render)
+- this can be done by:
+
+      1. removing `children` from the render prop's props
+      2. returning state directly
+      3. exporting a component function that wraps props passed in and returns
+          the custom hook so that we still have a render props component
+      4. replacing the render prop in the component with the custom hook, getting
+          the state provided by the old render prop from the new custom hook
