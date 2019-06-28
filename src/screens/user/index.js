@@ -12,7 +12,7 @@ import {
   LoadingMessagePage,
 } from '../../shared/pattern'
 import {Context as GitHubContext} from '../../github-client'
-import Query from './components/query'
+import {useQuery} from './components/query'
 import Profile from './components/profile'
 import RepoFilter from './components/repo-filter'
 import RepoList from './components/repo-list'
@@ -110,66 +110,51 @@ function normalizeUserData(data) {
 }
 
 const User = ({username}) => {
-  /**
-   * use useState to store and update the simple filter value
-   *
-   * There's no need for a separate handler for when filter needs to eb set, so
-   * we can remove the handler and just use the state update function returned
-   * from useState
-   */
   const [filter, setFilter] = useState('')
-  /*
-   * destructure the context returned by passing the GitHubContext into
-   * useContext
-   */
   const {logout} = useContext(GitHubContext)
+  const {fetching, data, error} = useQuery({
+    query: userQuery,
+    variables: {username},
+    normalize: normalizeUserData,
+  })
 
-  /**
-   * remove all occurrences of `this`
+  /*
+   * Replace render prop by importing a custom hook that provides the same
+   * propertis that the render prop provides
    */
-  return (
-    <Query
-      query={userQuery}
-      variables={{username}}
-      normalize={normalizeUserData}
-    >
-      {({fetching, data, error}) =>
-        error ? (
-          <IsolatedContainer>
-            <p>There was an error loading the data</p>
-            <pre>{JSON.stringify(error, null, 2)}</pre>
-          </IsolatedContainer>
-        ) : fetching ? (
-          <LoadingMessagePage>Loading data for {username}</LoadingMessagePage>
-        ) : data ? (
-          <UserContext.Provider value={data}>
-            <Container>
-              <Row>
-                <Column width="3">
-                  <Profile />
-                  <PrimaryButton
-                    css={{marginTop: 20, width: '100%'}}
-                    onClick={logout}
-                  >
-                    Logout
-                  </PrimaryButton>
-                  <ButtonLink css={{marginTop: 20, width: '100%'}} to="/">
-                    Try another
-                  </ButtonLink>
-                </Column>
-                <Column width="9">
-                  <Text size="subheading">Repositories</Text>
-                  <RepoFilter filter={filter} onUpdate={setFilter} />
-                  <RepoList filter={filter} />
-                </Column>
-              </Row>
-            </Container>
-          </UserContext.Provider>
-        ) : (
-          <IsolatedContainer>I have no idea what's up...</IsolatedContainer>
-        )
-      }
-    </Query>
+  return error ? (
+    <IsolatedContainer>
+      <p>There was an error loading the data</p>
+      <pre>{JSON.stringify(error, null, 2)}</pre>
+    </IsolatedContainer>
+  ) : fetching ? (
+    <LoadingMessagePage>Loading data for {username}</LoadingMessagePage>
+  ) : data ? (
+    <UserContext.Provider value={data}>
+      <Container>
+        <Row>
+          <Column width="3">
+            <Profile />
+            <PrimaryButton
+              css={{marginTop: 20, width: '100%'}}
+              onClick={logout}
+            >
+              Logout
+            </PrimaryButton>
+            <ButtonLink css={{marginTop: 20, width: '100%'}} to="/">
+              Try another
+            </ButtonLink>
+          </Column>
+          <Column width="9">
+            <Text size="subheading">Repositories</Text>
+            <RepoFilter filter={filter} onUpdate={setFilter} />
+            <RepoList filter={filter} />
+          </Column>
+        </Row>
+      </Container>
+    </UserContext.Provider>
+  ) : (
+    <IsolatedContainer>I have no idea what's up...</IsolatedContainer>
   )
 }
 User.propTypes = {
