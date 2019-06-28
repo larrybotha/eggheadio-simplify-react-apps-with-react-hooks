@@ -69,13 +69,7 @@ const usePrevious = value => {
   return ref.current
 }
 
-/*
- * instead of a Query component that renders a child, passing props through to
- * it, we can remove the `children` prop, and return the state directly.
- *
- * This is now a custom effect that can be used from within another componentn
- */
-function useQuery({query, variables, normalize = data => data}) {
+function Query({query, variables, children, normalize = data => data}) {
   const client = useContext(GitHub.Context)
 
   /*
@@ -126,25 +120,13 @@ function useQuery({query, variables, normalize = data => data}) {
    */
   const previousInputs = usePrevious([query, variables])
 
-  return state
+  return children(state)
 }
-
-/*
- * Because some components may use the render prop, we can continue providigin
- * the render prop so that those components don't need to changes.
- *
- * This is in fact how Kent tests his cusomtEffects - by testing a render
- * prop component
- */
-const Query = props => useQuery(props)
-
 Query.propTypes = {
   children: PropTypes.func.isRequired,
   normalize: PropTypes.func,
   query: PropTypes.string.isRequired,
   variables: PropTypes.object,
 }
-
-export {useQuery}
 
 export default Query
