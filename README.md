@@ -190,3 +190,7 @@ const MyRenderProp = props => useCustomHook(props);
           the state provided by the old render prop from the new custom hook
 
 ## 09. Handle componentDidMount and componentWillUnmount in React Component Refactor to Hooks
+
+[github-client.js](./src/github-client.js)
+
+[github-client.original.js](./src/github-client.original.js)
