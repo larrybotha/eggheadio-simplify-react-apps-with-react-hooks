@@ -15,6 +15,7 @@ Folder structure from [this gist](https://gist.github.com/ryanflorence/daafb1e3c
 - [06. Track Values Over the Course of Renders with React `useRef` in a Custom `usePrevious` Hook](#06-track-values-over-the-course-of-renders-with-react-useref-in-a-custom-useprevious-hook)
 - [07. Refactor a React Class Component with useContext and useState Hooks](#07-refactor-a-react-class-component-with-usecontext-and-usestate-hooks)
 - [08. Refactor a render Prop Component to a Custom React Hook](#08-refactor-a-render-prop-component-to-a-custom-react-hook)
+- [09. Handle componentDidMount and componentWillUnmount in React Component Refactor to Hooks](#09-handle-componentdidmount-and-componentwillunmount-in-react-component-refactor-to-hooks)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -187,3 +188,20 @@ const MyRenderProp = props => useCustomHook(props);
           the custom hook so that we still have a render props component
       4. replacing the render prop in the component with the custom hook, getting
           the state provided by the old render prop from the new custom hook
+
+## 09. Handle componentDidMount and componentWillUnmount in React Component Refactor to Hooks
+
+[github-client.js](./src/github-client.js)
+
+[github-client.original.js](./src/github-client.original.js)
+
+*Takeaways:*
+
+- `useEffect` should not be thought of in terms of being equivalent to
+    `componentDidMount` and `componentWillUnmount` -  a more accurate mental
+    model is that it's a combination of the two _and_ `componentDidUpdate`
+- `useEffect` doesn't run synchronously after the first render, as
+    `componentDidMount` does; it runs asynchronously some time after the first
+    render
+- `useState` accepts an initialiser function which is run only on first render,
+    and from which the initial state is returned
