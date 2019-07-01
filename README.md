@@ -194,3 +194,14 @@ const MyRenderProp = props => useCustomHook(props);
 [github-client.js](./src/github-client.js)
 
 [github-client.original.js](./src/github-client.original.js)
+
+*Takeaways:*
+
+- `useEffect` should not be thought of in terms of being equivalent to
+    `componentDidMount` and `componentWillUnmount` -  a more accurate mental
+    model is that it's a combination of the two _and_ `componentDidUpdate`
+- `useEffect` doesn't run synchronously after the first render, as
+    `componentDidMount` does; it runs asynchronously some time after the first
+    render
+- `useState` accepts an initialiser function which is run only on first render,
+    and from which the initial state is returned
