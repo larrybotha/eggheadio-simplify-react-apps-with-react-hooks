@@ -16,6 +16,7 @@ Folder structure from [this gist](https://gist.github.com/ryanflorence/daafb1e3c
 - [07. Refactor a React Class Component with useContext and useState Hooks](#07-refactor-a-react-class-component-with-usecontext-and-usestate-hooks)
 - [08. Refactor a render Prop Component to a Custom React Hook](#08-refactor-a-render-prop-component-to-a-custom-react-hook)
 - [09. Handle componentDidMount and componentWillUnmount in React Component Refactor to Hooks](#09-handle-componentdidmount-and-componentwillunmount-in-react-component-refactor-to-hooks)
+- [10. Dynamically Import React Components with React.lazy and Suspense](#10-dynamically-import-react-components-with-reactlazy-and-suspense)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -205,3 +206,18 @@ const MyRenderProp = props => useCustomHook(props);
     render
 - `useState` accepts an initialiser function which is run only on first render,
     and from which the initial state is returned
+
+## 10. Dynamically Import React Components with React.lazy and Suspense
+
+[index.js](./src/index.js)
+
+[index.original.js](./src/index.original.js)
+
+*Takeaways:*
+
+- `React.lazy` accepts a function that returns the promise from a dynamic import
+- lazy-loaded components need to be wrapped inside a `Suspense` component
+- React's `Suspense` component renders a fallback component while lazy-loaded
+    components are in a pending state
+- An error boundary is required to prevent React from unmounting the app when
+    unhandled exceptions are thrown

@@ -1,31 +1,33 @@
 import './global-styles.css'
-import React from 'react'
+import React, {Suspense} from 'react'
 import ReactDOM from 'react-dom'
 import {Router} from '@reach/router'
 import ErrorBoundary from 'react-error-boundary'
-import loadable from 'react-loadable'
 import ThemeProvider from './shared/theme-provider'
 import {IsolatedContainer, LoadingMessagePage} from './shared/pattern'
 import * as GitHubContext from './github-client'
 
-function LoadingFallback({error, pastDelay}) {
-  if (error) {
-    // our ErrorBoundary will catch this
-    throw error
-  }
-  return <LoadingMessagePage>Loading Application</LoadingMessagePage>
-}
+/*
+ * React.lazy accepts a function which returns the promise return from calling
+ * the dynamic import feature proposed for javascript
+ *
+ * With webpack and other libraries, this results in the lazy-loaded components
+ * being split into their own chunks
+ */
+const Home = React.lazy(() => import('./screens/home'))
+const User = React.lazy(() => import('./screens/user'))
 
-const Home = loadable({
-  loader: () => import('./screens/home'),
-  loading: LoadingFallback,
-})
-
-const User = loadable({
-  loader: () => import('./screens/user'),
-  loading: LoadingFallback,
-})
-
+/*
+ * We need an error boundary to handle errors
+ *
+ * React used to fail with an error, but without updating the UI, resulting in a
+ * broken experience
+ *
+ * With the introductino of error boundaries, React will unmount the entire app
+ * if the error is not handled. The thinking behind this is that it's better to
+ * encourage the explicit handling of errors, and to not leave users in a
+ * situation where the UI appears to be operating, but isn't
+ */
 function ErrorFallback({error}) {
   return (
     <IsolatedContainer>
@@ -35,15 +37,28 @@ function ErrorFallback({error}) {
   )
 }
 
+/*
+ * In order to use React.lazy, components that are dynamically imported need to
+ * be rendered within the context of a Suspense component.
+ *
+ * Suspense requires a fallback component to render while the promise in the
+ * lazy component is being resolved
+ */
 function App() {
   return (
     <ThemeProvider>
       <GitHubContext.Provider>
         <ErrorBoundary FallbackComponent={ErrorFallback}>
-          <Router>
-            <Home path="/" />
-            <User path="/:username" />
-          </Router>
+          <Suspense
+            fallback={
+              <LoadingMessagePage>Loading Application</LoadingMessagePage>
+            }
+          >
+            <Router>
+              <Home path="/" />
+              <User path="/:username" />
+            </Router>
+          </Suspense>
         </ErrorBoundary>
       </GitHubContext.Provider>
     </ThemeProvider>
