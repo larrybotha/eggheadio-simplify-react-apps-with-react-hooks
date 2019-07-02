@@ -8,6 +8,19 @@ import {IsolatedContainer, LoadingMessagePage} from './shared/pattern'
 import * as GitHubContext from './github-client'
 
 /*
+ * In the original implementation we needdd to handle if our loading fallback
+ * was receiving an error, and then rethrow that error so that our
+ * ErrorBoundary could handle it
+ *
+ * With React Suspense there's no need to handle the error, as Suspense throws
+ * the error for us, which our ErrorBoundary can then handle
+ *
+ * Because of this, there's no need to extend the loading fallback with the
+ * rethrowing of the error, and we can instead pass the loading fallback
+ * directly to Suspense
+ */
+
+/*
  * React.lazy accepts a function which returns the promise return from calling
  * the dynamic import feature proposed for javascript
  *
