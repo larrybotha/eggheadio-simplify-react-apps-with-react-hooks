@@ -17,6 +17,7 @@ Folder structure from [this gist](https://gist.github.com/ryanflorence/daafb1e3c
 - [08. Refactor a render Prop Component to a Custom React Hook](#08-refactor-a-render-prop-component-to-a-custom-react-hook)
 - [09. Handle componentDidMount and componentWillUnmount in React Component Refactor to Hooks](#09-handle-componentdidmount-and-componentwillunmount-in-react-component-refactor-to-hooks)
 - [10. Dynamically Import React Components with React.lazy and Suspense](#10-dynamically-import-react-components-with-reactlazy-and-suspense)
+- [11. Preload React Components with the useEffect Hook](#11-preload-react-components-with-the-useeffect-hook)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -221,3 +222,34 @@ const MyRenderProp = props => useCustomHook(props);
     components are in a pending state
 - An error boundary is required to prevent React from unmounting the app when
     unhandled exceptions are thrown
+
+## 11. Preload React Components with the useEffect Hook
+
+[home/index.js](./src/screens/home/index.js)
+
+[home/index.original.js](./src/screens/home/index.original.js)
+
+When users visit the home, we know that they're going to go to the user page
+next. We're already dynamically loading the routes using `React.lazy`, but these
+chunks will only load when a user navigates to the specific routes.
+
+Once the user route has loaded, only then will the request for user data begin.
+
+We can improve on this by preloading the user page from inside the home page,
+since we know that users will be navigating to the user page from the home page.
+
+To achieve this:
+
+- use `useEffect` inside the home page
+- execute the function in `useEffect` only once, since we only want the chunk
+    loaded once, by providing an empty dependency array
+- use Webpack's `import` to import the user page inside `useEffect`
+
+*Takeaways:*
+
+- components that are being lazy loaded may do well to be preloaded if we know
+    that a user will be interacting with them from some previous location
+- this would tie in well with UIs that are navigated deterministically
+- `useEffect` can be used along with Webpack's `import` from within a component
+    in order to preload components from components we are confident will be
+    preceding the preloaded component
