@@ -12,18 +12,8 @@ function handleSubmit(e) {
 }
 
 function Home() {
-  /*
-   * We know that users visiting the home page will be visiting the user page
-   * next, so instead of loading the chunk when they navigate to the page, and
-   * then making the request to grahoql, we can preload the chunk, so that when
-   * the user navigates there the graphql query can fire stragiht away
-   *
-   * To achieve this, we can use React's useEffect. We only want to preload the
-   * user page once, so we place Webpack's import inside the useEffect, with an
-   * empty dependecy array
-   */
   useEffect(() => {
-    import('../user')
+    // import('../user')
   }, [])
 
   return (
